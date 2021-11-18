@@ -66,7 +66,7 @@ class LoginFragment : Fragment() {
                     binding.editPhoneLayout.error = null
                     requestFirebaseCode(clearPhoneNumber)
                 }else{
-                    binding.editPhoneLayout.error = "Номер содержит недопустимые символы"
+                    binding.editPhoneLayout.error = getString(R.string.bad_valid_number)
                 }
             }
         }
@@ -86,18 +86,17 @@ class LoginFragment : Fragment() {
                 _verificationId = verificationId
                 codeSent = true
                 binding.editCodeLayout.visibility = View.VISIBLE
-                binding.btnGetCode.text = "Отправить код"
-                model.startTimer(120000L)
+                binding.btnGetCode.text = getString(R.string.send_code)
+                model.startTimer(ViewModelLogin.TIMEOUT)
             }
         }
 
         model.liveDataFirebaseTimeOut.observe(viewLifecycleOwner, Observer {
-            println(it)
             if (!it.first){
-                binding.editCodeLayout.helperText = "Осталось ${it.second}"
+                binding.editCodeLayout.helperText = "${getString(R.string.timer_remained)} ${it.second}"
             }else{
                 binding.editCodeLayout.visibility = View.INVISIBLE
-                binding.btnGetCode.text = "Получить код повторно"
+                binding.btnGetCode.text = getString(R.string.get_code_again)
                 codeSent = false
             }
         })
@@ -111,17 +110,14 @@ class LoginFragment : Fragment() {
                     // Sign in success, update UI with the signed-in user's information
                     println("signInWithCredential:success")
                     binding.editCodeLayout.error = null
-                    val user = task.result?.user
-                    println("Sing user = $user")
                     model.stopTimer()
                     Toast.makeText(requireContext(), "SUCCESS!!", Toast.LENGTH_LONG).show()
                 } else {
-                    // Sign in failed, display a message and update the UI
                     println( "signInWithCredential:failure" + task.exception)
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         println("bad code")
                     }
-                    binding.editCodeLayout.error = "Не правильный код"
+                    binding.editCodeLayout.error = getString(R.string.bad_code)
                 }
             }
     }
@@ -129,7 +125,7 @@ class LoginFragment : Fragment() {
     private fun requestFirebaseCode(clearPhoneNumber: String) {
         val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
             .setPhoneNumber(clearPhoneNumber)       // Phone number to verify
-            .setTimeout(30L, TimeUnit.SECONDS) // Timeout and unit
+            .setTimeout(ViewModelLogin.TIMEOUT, TimeUnit.SECONDS) // Timeout and unit
             .setActivity(requireActivity())                 // Activity (for callback binding)
             .setCallbacks(callbackFireBase)          // OnVerificationStateChangedCallbacks
             .build()

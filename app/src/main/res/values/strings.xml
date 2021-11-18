@@ -2,5 +2,11 @@
     <string name="app_name">Winfox-test-task</string>
     <string name="login_phone_help">Введите ваш номер телефона</string>
     <string name="login_phone">Ваш номер телефона</string>
+    <string name="bad_valid_number">Номер содержит недопустимые символы</string>
     <string name="login_code">Введите проверочный код</string>
+    <string name="get_code">Получить код</string>
+    <string name="get_code_again">Получить код повторно</string>
+    <string name="send_code">Отправить код</string>
+    <string name="bad_code">Неправильный код</string>
+    <string name="timer_remained">Осталось</string>
 </resources>

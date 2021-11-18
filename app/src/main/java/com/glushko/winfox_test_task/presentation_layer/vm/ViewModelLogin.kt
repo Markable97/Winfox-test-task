@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 class ViewModelLogin: ViewModel() {
 
     companion object {
+        const val TIMEOUT = 120L
         private const val ONE_SECOND = 1000L
         private const val DONE = 0L
     }
@@ -18,7 +19,7 @@ class ViewModelLogin: ViewModel() {
 
     fun startTimer(timeout: Long){
 
-        timer = object : CountDownTimer(timeout, ONE_SECOND){
+        timer = object : CountDownTimer(timeout * ONE_SECOND, ONE_SECOND){
             override fun onTick(tick: Long) {
                 _liveDataFirebaseTimeOut.value = false to tick / ONE_SECOND
             }
