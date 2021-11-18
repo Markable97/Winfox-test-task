@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -43,6 +44,7 @@ ext{
     googleMapsKtx = "3.2.0"
     googleMapsService = "17.0.0"
     nav_version = "2.4.0-beta02"
+    fireBaseBoom = "29.0.0"
 }
 
 dependencies {
@@ -76,6 +78,12 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
+    // Import the BoM for the Firebase platform
+    implementation platform("com.google.firebase:firebase-bom:${fireBaseBoom}")
+    // Declare the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
