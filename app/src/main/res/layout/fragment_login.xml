@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation_layer.ui.MainActivity">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edit_phone_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_phone"
+        android:textAlignment="center"
+        app:errorEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:inputType="phone"
+            android:maxLength="16"
+            android:text="" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edit_code_layout"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:visibility="invisible"
+        android:hint="@string/login_code"
+        android:textAlignment="center"
+        app:errorEnabled="true"
+        tools:visibility="visible"
+        app:helperTextTextColor="@color/purple_200"
+        app:layout_constraintBottom_toTopOf="@+id/btn_get_code"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_phone_layout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:inputType="phone"
+            android:maxLength="6"
+            android:text="" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/btn_get_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Получить код"
+        app:layout_constraintTop_toBottomOf="@id/edit_code_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

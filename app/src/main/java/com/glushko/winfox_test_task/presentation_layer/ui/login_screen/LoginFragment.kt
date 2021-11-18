@@ -1,26 +1,36 @@
-package com.glushko.winfox_test_task
+package com.glushko.winfox_test_task.presentation_layer.ui.login_screen
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.BoringLayout
-import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
-import com.glushko.winfox_test_task.databinding.ActivityMainBinding
-
 import androidx.core.widget.doBeforeTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.glushko.winfox_test_task.R
+import com.glushko.winfox_test_task.databinding.FragmentLoginBinding
+import com.glushko.winfox_test_task.presentation_layer.vm.ViewModelLogin
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
-import com.google.firebase.ktx.Firebase
 import java.util.concurrent.TimeUnit
 
 
-class MainActivity : AppCompatActivity() {
+class LoginFragment : Fragment() {
 
-    private lateinit var binding: ActivityMainBinding
+    companion object {
+
+        fun newInstance(param1: String, param2: String) =
+            LoginFragment().apply {
+                arguments = Bundle().apply {
+
+                }
+            }
+    }
+
+    private lateinit var binding: FragmentLoginBinding
     private lateinit var callbackFireBase: PhoneAuthProvider.OnVerificationStateChangedCallbacks
     private var codeSent: Boolean = false
     private var _verificationId: String = ""
@@ -29,9 +39,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        model = ViewModelProvider(this).get(ViewModelLogin::class.java)
+        arguments?.let {
+        }
+        model = ViewModelProvider(requireActivity()).get(ViewModelLogin::class.java)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentLoginBinding.inflate(inflater,container,false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         initEditTextPhone()
         binding.btnGetCode.setOnClickListener {
             if(codeSent){
@@ -64,11 +87,11 @@ class MainActivity : AppCompatActivity() {
                 codeSent = true
                 binding.editCodeLayout.visibility = View.VISIBLE
                 binding.btnGetCode.text = "Отправить код"
-                model.startTimer(30000L)
+                model.startTimer(120000L)
             }
         }
 
-        model.liveDataFirebaseTimeOut.observe(this, Observer {
+        model.liveDataFirebaseTimeOut.observe(viewLifecycleOwner, Observer {
             println(it)
             if (!it.first){
                 binding.editCodeLayout.helperText = "Осталось ${it.second}"
@@ -78,12 +101,12 @@ class MainActivity : AppCompatActivity() {
                 codeSent = false
             }
         })
-
     }
+
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         FirebaseAuth.getInstance().signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
+            .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     println("signInWithCredential:success")
@@ -91,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                     val user = task.result?.user
                     println("Sing user = $user")
                     model.stopTimer()
-                    Toast.makeText(this, "SUCCESS!!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "SUCCESS!!", Toast.LENGTH_LONG).show()
                 } else {
                     // Sign in failed, display a message and update the UI
                     println( "signInWithCredential:failure" + task.exception)
@@ -107,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
             .setPhoneNumber(clearPhoneNumber)       // Phone number to verify
             .setTimeout(30L, TimeUnit.SECONDS) // Timeout and unit
-            .setActivity(this)                 // Activity (for callback binding)
+            .setActivity(requireActivity())                 // Activity (for callback binding)
             .setCallbacks(callbackFireBase)          // OnVerificationStateChangedCallbacks
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
@@ -193,4 +216,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 }

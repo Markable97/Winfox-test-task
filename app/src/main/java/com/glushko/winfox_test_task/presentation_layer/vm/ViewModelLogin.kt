@@ -1,4 +1,4 @@
-package com.glushko.winfox_test_task
+package com.glushko.winfox_test_task.presentation_layer.vm
 
 import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
