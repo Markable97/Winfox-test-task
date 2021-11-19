@@ -14,6 +14,7 @@ import com.glushko.winfox_test_task.R
 import com.glushko.winfox_test_task.databinding.FragmentLoginBinding
 import com.glushko.winfox_test_task.presentation_layer.vm.ViewModelLogin
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.*
 import java.util.concurrent.TimeUnit
 
@@ -54,7 +55,7 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        activity?.setActionBar(binding.inclToolbar.toolbar)
         initEditTextPhone()
         binding.btnGetCode.setOnClickListener {
             if(codeSent){
@@ -82,16 +83,31 @@ class LoginFragment : Fragment() {
         callbackFireBase = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                 println( "onVerificationCompleted:$credential")
+                binding.inclToolbar.toolbarProgressBar.visibility = View.INVISIBLE
                 signInWithPhoneAuthCredential(credential)
             }
 
             override fun onVerificationFailed(e: FirebaseException) {
                 println("onVerificationFailed: $e")
+                binding.inclToolbar.toolbarProgressBar.visibility = View.INVISIBLE
+                val text = if(e is FirebaseNetworkException){
+                    getString(R.string.network_err)
+                }else{
+                    getString(R.string.firebase_err)
+                }
+                binding.editPhoneLayout.error = text
+                binding.btnGetCode.text = getString(R.string.get_code_again)
+                codeSent = false
             }
 
             override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
                 println("onCodeSent:id = $verificationId \n token = $token")
+                binding.inclToolbar.toolbarProgressBar.visibility = View.INVISIBLE
                 _verificationId = verificationId
+                codeSent = true
+                binding.editCodeLayout.visibility = View.VISIBLE
+                binding.btnGetCode.text = getString(R.string.send_code)
+                model.startTimer(ViewModelLogin.TIMEOUT)
             }
         }
 
@@ -106,13 +122,14 @@ class LoginFragment : Fragment() {
             }
         })
         model.liveDataCheckUser.observe(viewLifecycleOwner, Observer {
+            binding.inclToolbar.toolbarProgressBar.visibility = View.INVISIBLE
+            binding.btnGetCode.isEnabled = true
             if(it.isSuccess){
-                binding.btnGetCode.isEnabled = true
                 binding.editCodeLayout.error = null
                 model.stopTimer()
                 Toast.makeText(requireContext(), "SUCCESS!!", Toast.LENGTH_LONG).show()
             }else{
-                binding.editCodeLayout.error = getString(R.string.bad_code)
+                binding.editCodeLayout.error = getString(R.string.err_check)
             }
         })
     }
@@ -124,8 +141,9 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     println("signInWithCredential:success")
-                    model.sendToServer(_verificationId, task.result?.user?.phoneNumber?:"")
                     binding.btnGetCode.isEnabled = false
+                    binding.inclToolbar.toolbarProgressBar.visibility = View.VISIBLE
+                    model.sendToServer(_verificationId, task.result?.user?.phoneNumber?:"")
                 } else {
                     println( "signInWithCredential:failure" + task.exception)
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
@@ -144,10 +162,7 @@ class LoginFragment : Fragment() {
             .setCallbacks(callbackFireBase)          // OnVerificationStateChangedCallbacks
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
-        codeSent = true
-        binding.editCodeLayout.visibility = View.VISIBLE
-        binding.btnGetCode.text = getString(R.string.send_code)
-        model.startTimer(ViewModelLogin.TIMEOUT)
+        binding.inclToolbar.toolbarProgressBar.visibility = View.VISIBLE
     }
 
     private fun clearNumber(number: String): String {

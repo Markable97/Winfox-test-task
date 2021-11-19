@@ -11,4 +11,7 @@
     <string name="timer_remained">Осталось</string>
     <string name="fast_send_code">Пользователь еще не прошел проверку</string>
     <string name="empty_sent_code">Поле не заполнено</string>
+    <string name="err_check">Ошибка</string>
+    <string name="network_err">Нет соединения с интернетом</string>
+    <string name="firebase_err">Возникли проблемы, попробуйте позже</string>
 </resources>

@@ -10,6 +10,8 @@ import com.glushko.winfox_test_task.data_layer.datasource.response.ResponseServe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.util.*
+import kotlin.concurrent.schedule
 import java.util.concurrent.TimeUnit
 
 class ViewModelLogin: ViewModel() {
@@ -53,7 +55,7 @@ class ViewModelLogin: ViewModel() {
     fun sendToServer(id: String, phoneNumber: String) {
         myCompositeDisposable?.addAll(
             useCase.checkUser(LoginData(phoneNumber,id))
-                .delay(10L, TimeUnit.SECONDS)
+                .delay(2L, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handlerResponse, this::handleError)
@@ -61,10 +63,12 @@ class ViewModelLogin: ViewModel() {
     }
 
     private fun handlerResponse(response: LoginData) {
+        println("handlerResponse $response")
         _liveDataCheckUser.value = ResponseServer(true, response)
     }
 
     private fun handleError(err: Throwable) {
+        println("handleError ${err.message}")
         _liveDataCheckUser.value = ResponseServer(false, LoginData("", ""))
     }
 
