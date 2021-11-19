@@ -9,4 +9,6 @@
     <string name="send_code">Отправить код</string>
     <string name="bad_code">Неправильный код</string>
     <string name="timer_remained">Осталось</string>
+    <string name="fast_send_code">Пользователь еще не прошел проверку</string>
+    <string name="empty_sent_code">Поле не заполнено</string>
 </resources>

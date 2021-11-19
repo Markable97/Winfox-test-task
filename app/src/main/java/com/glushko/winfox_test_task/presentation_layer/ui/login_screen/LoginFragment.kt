@@ -59,7 +59,15 @@ class LoginFragment : Fragment() {
         binding.btnGetCode.setOnClickListener {
             if(codeSent){
                 val code = binding.editCode.text.toString()
-                signInWithPhoneAuthCredential(PhoneAuthProvider.getCredential(_verificationId, code))
+                if(code.isEmpty()){
+                    binding.editCodeLayout.error = getString(R.string.empty_sent_code)
+                }else{
+                    if(_verificationId.isEmpty()){
+                        binding.editCodeLayout.error = getString(R.string.fast_send_code)
+                    }else{
+                        signInWithPhoneAuthCredential(PhoneAuthProvider.getCredential(_verificationId, code))
+                    }
+                }
             }else{
                 val clearPhoneNumber = clearNumber(binding.editPhone.text.toString())
                 if(validNumber(clearPhoneNumber)){
@@ -82,12 +90,8 @@ class LoginFragment : Fragment() {
             }
 
             override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-                println("onCodeSent:$verificationId \n$token")
+                println("onCodeSent:id = $verificationId \n token = $token")
                 _verificationId = verificationId
-                codeSent = true
-                binding.editCodeLayout.visibility = View.VISIBLE
-                binding.btnGetCode.text = getString(R.string.send_code)
-                model.startTimer(ViewModelLogin.TIMEOUT)
             }
         }
 
@@ -98,6 +102,17 @@ class LoginFragment : Fragment() {
                 binding.editCodeLayout.visibility = View.INVISIBLE
                 binding.btnGetCode.text = getString(R.string.get_code_again)
                 codeSent = false
+                binding.btnGetCode.isEnabled = true
+            }
+        })
+        model.liveDataCheckUser.observe(viewLifecycleOwner, Observer {
+            if(it.isSuccess){
+                binding.btnGetCode.isEnabled = true
+                binding.editCodeLayout.error = null
+                model.stopTimer()
+                Toast.makeText(requireContext(), "SUCCESS!!", Toast.LENGTH_LONG).show()
+            }else{
+                binding.editCodeLayout.error = getString(R.string.bad_code)
             }
         })
     }
@@ -109,9 +124,8 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     println("signInWithCredential:success")
-                    binding.editCodeLayout.error = null
-                    model.stopTimer()
-                    Toast.makeText(requireContext(), "SUCCESS!!", Toast.LENGTH_LONG).show()
+                    model.sendToServer(_verificationId, task.result?.user?.phoneNumber?:"")
+                    binding.btnGetCode.isEnabled = false
                 } else {
                     println( "signInWithCredential:failure" + task.exception)
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
@@ -130,8 +144,10 @@ class LoginFragment : Fragment() {
             .setCallbacks(callbackFireBase)          // OnVerificationStateChangedCallbacks
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
-
-
+        codeSent = true
+        binding.editCodeLayout.visibility = View.VISIBLE
+        binding.btnGetCode.text = getString(R.string.send_code)
+        model.startTimer(ViewModelLogin.TIMEOUT)
     }
 
     private fun clearNumber(number: String): String {

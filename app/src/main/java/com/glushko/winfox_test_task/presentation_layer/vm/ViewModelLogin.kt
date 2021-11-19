@@ -4,6 +4,13 @@ import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.glushko.winfox_test_task.business_logic_layer.domain.LoginData
+import com.glushko.winfox_test_task.business_logic_layer.interactor.UseCase
+import com.glushko.winfox_test_task.data_layer.datasource.response.ResponseServer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class ViewModelLogin: ViewModel() {
 
@@ -13,13 +20,21 @@ class ViewModelLogin: ViewModel() {
         private const val DONE = 0L
     }
 
+    private val useCase by lazy { UseCase() }
+    private var myCompositeDisposable: CompositeDisposable? = null
     private val _liveDataFirebaseTimeOut: MutableLiveData<Pair<Boolean,Long>> = MutableLiveData()
     val liveDataFirebaseTimeOut: LiveData<Pair<Boolean,Long>> = _liveDataFirebaseTimeOut
+    private val _liveDataCheckUser: MutableLiveData<ResponseServer> = MutableLiveData()
+    val liveDataCheckUser: LiveData<ResponseServer> = _liveDataCheckUser
     private lateinit var timer: CountDownTimer
+
+    init {
+        myCompositeDisposable = CompositeDisposable()
+    }
 
     fun startTimer(timeout: Long){
 
-        timer = object : CountDownTimer(timeout * ONE_SECOND, ONE_SECOND){
+        timer = object : CountDownTimer(timeout * ONE_SECOND, ONE_SECOND + 1000){
             override fun onTick(tick: Long) {
                 _liveDataFirebaseTimeOut.value = false to tick / ONE_SECOND
             }
@@ -35,9 +50,30 @@ class ViewModelLogin: ViewModel() {
         timer.cancel()
     }
 
+    fun sendToServer(id: String, phoneNumber: String) {
+        myCompositeDisposable?.addAll(
+            useCase.checkUser(LoginData(phoneNumber,id))
+                .delay(10L, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handlerResponse, this::handleError)
+        )
+    }
+
+    private fun handlerResponse(response: LoginData) {
+        _liveDataCheckUser.value = ResponseServer(true, response)
+    }
+
+    private fun handleError(err: Throwable) {
+        _liveDataCheckUser.value = ResponseServer(false, LoginData("", ""))
+    }
+
     override fun onCleared() {
         super.onCleared()
         timer.cancel()
     }
+
+
+
 
 }
