@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.glushko.winfox_test_task.data_layer.datasource.response.ResponsePlaces
 import com.glushko.winfox_test_task.databinding.FragmentListPlacesBinding
+import com.glushko.winfox_test_task.presentation_layer.ui.main_screen.list_places_screen.adapter.AdapterPlaces
 import com.glushko.winfox_test_task.presentation_layer.vm.ViewModelMainScreen
 
 class ListPlacesFragment: Fragment() {
@@ -35,9 +35,10 @@ class ListPlacesFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         model.liveDataPlace.observe(viewLifecycleOwner, Observer {
             println(it)
+            val adapter = AdapterPlaces(it.places)
+            binding.recyclerPlaces.adapter = adapter
         })
     }
 

@@ -14,6 +14,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.glushko.winfox_test_task.R
 import com.glushko.winfox_test_task.databinding.FragmentLoginBinding
+import com.glushko.winfox_test_task.presentation_layer.ui.main_screen.MainScreenFragment
 import com.glushko.winfox_test_task.presentation_layer.vm.ViewModelLogin
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseNetworkException
@@ -129,8 +130,7 @@ class LoginFragment : Fragment() {
             if(it.isSuccess){
                 binding.editCodeLayout.error = null
                 model.stopTimer()
-                val navOption = NavOptions.Builder().setPopUpTo(R.id.action_loginFragment_to_mainScreenFragment, true).build()
-                findNavController().navigate(R.id.action_loginFragment_to_mainScreenFragment, null, navOption)
+                parentFragmentManager.beginTransaction().replace(R.id.containerMain, MainScreenFragment()).commit()
                 Toast.makeText(requireContext(), "SUCCESS!!", Toast.LENGTH_LONG).show()
             }else{
                 binding.editCodeLayout.error = getString(R.string.err_check)

@@ -48,7 +48,7 @@ ext{
     googleMapsUtils = "2.2.3"
     googleMapsKtx = "3.2.0"
     googleMapsService = "17.0.0"
-    nav_version = "2.4.0-beta02"
+    nav_version = "2.4.0-alpha10"
     fireBaseBoom = "29.0.0"
     glide_version = "4.12.0"
 }
