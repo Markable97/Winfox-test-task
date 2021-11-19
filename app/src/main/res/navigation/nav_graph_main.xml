@@ -7,5 +7,13 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.glushko.winfox_test_task.presentation_layer.ui.login_screen.LoginFragment"
-        android:label="LoginFragment" />
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainScreenFragment"
+        android:name="com.glushko.winfox_test_task.presentation_layer.ui.main_screen.MainScreenFragment"
+        android:label="MainScreenFragment" />
 </navigation>

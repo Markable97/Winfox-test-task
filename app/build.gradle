@@ -50,6 +50,7 @@ ext{
     googleMapsService = "17.0.0"
     nav_version = "2.4.0-beta02"
     fireBaseBoom = "29.0.0"
+    glide_version = "4.12.0"
 }
 
 dependencies {
@@ -90,6 +91,10 @@ dependencies {
     // Declare the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-auth-ktx'
+
+    //GLIDE
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

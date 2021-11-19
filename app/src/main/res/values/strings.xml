@@ -14,4 +14,6 @@
     <string name="err_check">Ошибка</string>
     <string name="network_err">Нет соединения с интернетом</string>
     <string name="firebase_err">Возникли проблемы, попробуйте позже</string>
+    <string name="tab_menu_list">Список</string>
+    <string name="tab_menu_map">На карте</string>
 </resources>
