@@ -35,7 +35,7 @@ class MainScreenFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.setActionBar(binding.inclToolbar.toolbar)
-        binding.inclToolbar.toolbar.visibility = View.VISIBLE
+        binding.inclToolbar.toolbarProgressBar.visibility = View.VISIBLE
         model.getPlaces()
 
         val bottomNavigate = view.findViewById<BottomNavigationView>(R.id.mainButtonNavigation)

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import com.glushko.winfox_test_task.databinding.FragmentListPlacesBinding
 import com.glushko.winfox_test_task.presentation_layer.ui.main_screen.list_places_screen.adapter.AdapterPlaces
 import com.glushko.winfox_test_task.presentation_layer.vm.ViewModelMainScreen
@@ -38,6 +39,7 @@ class ListPlacesFragment: Fragment() {
         model.liveDataPlace.observe(viewLifecycleOwner, Observer {
             println(it)
             val adapter = AdapterPlaces(it.places)
+            binding.recyclerPlaces.layoutManager = GridLayoutManager(requireActivity(), 4)
             binding.recyclerPlaces.adapter = adapter
         })
     }

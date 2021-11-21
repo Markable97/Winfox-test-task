@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_main_screen"
     app:startDestination="@id/listPlacesFragment">
     <fragment
@@ -8,7 +9,8 @@
         android:name="com.glushko.winfox_test_task.presentation_layer.ui.main_screen.list_places_screen.ListPlacesFragment"
         android:label="ListPlacesFragment" />
     <fragment
-        android:id="@+id/mapFragment"
-        android:name="com.glushko.winfox_test_task.presentation_layer.ui.main_screen.map_place_screen.MapFragment"
-        android:label="MapFragment" />
+        android:id="@+id/mapsFragment"
+        android:name="com.glushko.winfox_test_task.presentation_layer.ui.main_screen.map_place_screen.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" />
 </navigation>
