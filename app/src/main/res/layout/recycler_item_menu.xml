@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="5dp"
+    >
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/menu_top"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/background_top_menu"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <View
+            android:id="@+id/menu_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/menu_bottom"
+            app:layout_constraintTop_toBottomOf="@id/menu_top"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <View
+            android:id="@+id/back_layer_top"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/round_view_for_image_menu"
+            app:layout_constraintTop_toTopOf="@id/menu_top"
+            app:layout_constraintBottom_toBottomOf="@id/menu_top"
+            app:layout_constraintStart_toStartOf="@id/menu_top"
+            app:layout_constraintEnd_toEndOf="@id/menu_top"
+             />
+
+        <ImageView
+            android:id="@+id/image_menu"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/content_desc_menu"
+            app:layout_constraintTop_toTopOf="@id/back_layer_top"
+            app:layout_constraintBottom_toBottomOf="@id/back_layer_top"
+            app:layout_constraintStart_toStartOf="@id/back_layer_top"
+            app:layout_constraintEnd_toEndOf="@id/back_layer_top"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/price_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:drawableRight="@drawable/ic_ruble_sign"
+            android:background="@drawable/round_view_for_image_menu"
+            android:padding="5dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/menu_bottom"
+            app:layout_constraintTop_toTopOf="@id/menu_bottom"
+            tools:text="199 " />
+
+        <TextView
+            android:id="@+id/weight_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textColor="#B2EBF2"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/price_menu"
+            app:layout_constraintStart_toStartOf="@id/price_menu"
+            app:layout_constraintTop_toBottomOf="@id/price_menu"
+            tools:text="350.00 гр." />
+
+        <TextView
+            android:id="@+id/desc_menu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/desc_menu"
+            tools:text="@tools:sample/lorem/random"
+            app:layout_constraintBottom_toBottomOf="@id/menu_bottom"
+            app:layout_constraintEnd_toStartOf="@id/weight_menu"
+            app:layout_constraintStart_toStartOf="@id/menu_bottom"
+            app:layout_constraintTop_toTopOf="@id/menu_bottom" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

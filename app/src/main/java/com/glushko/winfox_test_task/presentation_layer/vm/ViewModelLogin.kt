@@ -74,6 +74,9 @@ class ViewModelLogin: ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
+        myCompositeDisposable?.let {
+            it.clear()
+        }
         timer.cancel()
     }
 

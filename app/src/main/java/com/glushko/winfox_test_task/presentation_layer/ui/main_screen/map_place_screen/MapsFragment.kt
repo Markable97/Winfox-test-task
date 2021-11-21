@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.glushko.winfox_test_task.R
+import com.glushko.winfox_test_task.business_logic_layer.domain.Menu
+import com.glushko.winfox_test_task.business_logic_layer.domain.Place
+import com.glushko.winfox_test_task.presentation_layer.ui.main_screen.menu_screen.FragmentDialogMenu
 import com.glushko.winfox_test_task.presentation_layer.vm.ViewModelMainScreen
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -16,20 +19,24 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsFragment : Fragment() {
 
     private lateinit var model: ViewModelMainScreen
 
-    private val callback = OnMapReadyCallback { googleMap ->
+    private val markers: MutableList<Marker> = mutableListOf()
 
+    private val callback = OnMapReadyCallback { googleMap ->
         model.liveDataPlace.observe(viewLifecycleOwner, Observer {
             if(it.isSuccess){
                 var lastPlace: LatLng? = null
                 it.places.forEach {place ->
                     val placeForMap = LatLng(place.latitide, place.longitude)
-                    googleMap.addMarker(MarkerOptions().position(placeForMap).title(place.name))
+                    val marker = googleMap.addMarker(MarkerOptions().position(placeForMap).title(place.name))
+                    marker.tag = place
+                    markers.add(marker)
                     lastPlace = placeForMap
                 }
                 lastPlace?.let {
@@ -37,8 +44,22 @@ class MapsFragment : Fragment() {
                 }
             }
         })
+        googleMap.setOnInfoWindowClickListener(callbackClickInfoWindowMarker)
 
+    }
+    private val callbackClickInfoWindowMarker = GoogleMap.OnInfoWindowClickListener{
+        for(marker in markers){
+            if(marker.id == it.id){
+                val place = marker.tag as? Place
+                println("${place?.name?:""} = ${it.title}")
+                place?.let{
+                    model.getMenu(place.id)
+                    val dialogMenu = FragmentDialogMenu.getInstance(place.name)
+                    dialogMenu.show(childFragmentManager.beginTransaction(), FragmentDialogMenu.TAG)
+                }
 
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

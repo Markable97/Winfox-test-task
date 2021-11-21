@@ -1,10 +1,13 @@
 package com.glushko.winfox_test_task.presentation_layer.vm
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.glushko.winfox_test_task.business_logic_layer.domain.LoginData
+import com.glushko.winfox_test_task.business_logic_layer.domain.Menu
 import com.glushko.winfox_test_task.business_logic_layer.domain.Place
 import com.glushko.winfox_test_task.business_logic_layer.interactor.UseCase
+import com.glushko.winfox_test_task.data_layer.datasource.response.ResponseMenu
 import com.glushko.winfox_test_task.data_layer.datasource.response.ResponsePlaces
 import com.glushko.winfox_test_task.data_layer.datasource.response.ResponseServer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -16,7 +19,9 @@ class ViewModelMainScreen: ViewModel() {
     private val useCase by lazy { UseCase() }
     private var myCompositeDisposable: CompositeDisposable? = null
     private val _liveDataPlaces: MutableLiveData<ResponsePlaces> = MutableLiveData()
-    val liveDataPlace = _liveDataPlaces
+    val liveDataPlace: LiveData<ResponsePlaces> = _liveDataPlaces
+    private val _liveDataMenu: MutableLiveData<ResponseMenu> = MutableLiveData()
+    val liveDataMenu: LiveData<ResponseMenu> = _liveDataMenu
     init {
         myCompositeDisposable = CompositeDisposable()
     }
@@ -36,8 +41,34 @@ class ViewModelMainScreen: ViewModel() {
     }
 
     private fun handleErrorPlaces(err: Throwable) {
-        println("handleError ${err.message}")
         _liveDataPlaces.value = ResponsePlaces(true)
     }
+
+    fun getMenu(idPlace: String){
+        myCompositeDisposable?.addAll(
+            useCase.getMenu(idPlace)
+                //.delay(5L, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handlerResponseMenu, this::handleErrorMenu)
+        )
+    }
+
+    private fun handlerResponseMenu(response: List<Menu>) {
+        _liveDataMenu.value = ResponseMenu(true, response)
+    }
+
+    private fun handleErrorMenu(err: Throwable) {
+        println(err.message)
+        _liveDataMenu.value = ResponseMenu(true)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        myCompositeDisposable?.let {
+            it.clear()
+        }
+    }
+
 
 }
