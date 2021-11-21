@@ -17,4 +17,6 @@
     <string name="tab_menu_list">Список</string>
     <string name="tab_menu_map">На карте</string>
     <string name="content_desc_menu">image_menu</string>
+    <string name="menu_err">Не удалось загрузить меню</string>
+    <string name="menu_title">Меню</string>
 </resources>

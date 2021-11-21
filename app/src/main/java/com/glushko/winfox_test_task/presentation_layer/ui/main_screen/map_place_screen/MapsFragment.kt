@@ -53,8 +53,7 @@ class MapsFragment : Fragment() {
                 val place = marker.tag as? Place
                 println("${place?.name?:""} = ${it.title}")
                 place?.let{
-                    model.getMenu(place.id)
-                    val dialogMenu = FragmentDialogMenu.getInstance(place.name)
+                    val dialogMenu = FragmentDialogMenu.getInstance(place.id, place.name)
                     dialogMenu.show(childFragmentManager.beginTransaction(), FragmentDialogMenu.TAG)
                 }
 

@@ -47,7 +47,7 @@ class ViewModelMainScreen: ViewModel() {
     fun getMenu(idPlace: String){
         myCompositeDisposable?.addAll(
             useCase.getMenu(idPlace)
-                //.delay(5L, TimeUnit.SECONDS)
+                .delay(5L, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handlerResponseMenu, this::handleErrorMenu)
@@ -55,12 +55,13 @@ class ViewModelMainScreen: ViewModel() {
     }
 
     private fun handlerResponseMenu(response: List<Menu>) {
+        println(response)
         _liveDataMenu.value = ResponseMenu(true, response)
     }
 
     private fun handleErrorMenu(err: Throwable) {
         println(err.message)
-        _liveDataMenu.value = ResponseMenu(true)
+        _liveDataMenu.value = ResponseMenu(false)
     }
 
     override fun onCleared() {
